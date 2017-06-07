@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"
+      xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>游戏详情</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='bootstrap/bootstrap.min.css')}}"/>
+    <script src="{{url_for('static', filename='jquery.min.js')}}"></script>
+    <script src="{{url_for('static', filename='bootstrap/bootstrap.min.js')}}" type="text/javascript"></script>
+    <script src="{{ url_for('static', filename='echarts/echarts.js') }}"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="row clearfix">
+                <div class="col-md-1 column">
+                    <img src={{game_info[0][3]}} class="img-responsive center-block"/>
+                </div>
+                <div class="col-md-10 column">
+                    <div class="row clearfix" style="margin-top: 10px;margin-bottom: 10px;">
+                        <div class="col-md-12 column">
+                            <h4 id="gamename">{{game_info[0][0]}}</h4>
+                        </div>
+                    </div>
+                    <div class="row clearfix" style="margin-top: 10px;margin-bottom: 10px;">
+                        <div class="col-md-12 column">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <i>游戏标签：</i>
+                                    <a href="gametest?chartclick={{game_info[0][6]}}">{{game_info[0][4]}}</a>
+                                    <i>游戏来源：</i>
+                                    <a href="gametest?chartclick={{game_info[0][6]}}">{{game_info[0][5]}}</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <i>游戏简介：</i>
+                                    <p>{{game_info[0][2]}}</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row clearfix">
+                <div class="col-md-2 column">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>
+                                同类型游戏
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for same_type_game in same_type_games %}
+                        <tr>
+                            <td><a href="game_compare?game={{game_info[0][0]}}&compare_game={{same_type_game[1]}}">{{same_type_game[1]}}</a></td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>
+                                相似游戏
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for simi_game in simi_games %}
+                        <tr>
+                            <td><a href="game_compare?game={{game_info[0][0]}}&compare_game={{simi_game[0]}}">{{simi_game[0]}}</a></td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-10 column">
+                    <div class="row clearfix">
+                        <div class="col-md-4 column">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        360手机助手
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for zs360_data in zs360_datas %}
+                                <tr>
+                                    <td>{{zs360_data[0]}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{zs360_data[1]}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{zs360_data[2]}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{zs360_data[3]}}</td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-4 column">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        应用宝
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for yyb_data in yyb_datas %}
+                                <tr>
+                                    <td>{{yyb_data[0]}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{yyb_data[1]}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{yyb_data[2]}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{yyb_data[3]}}</td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-4 column">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        豌豆荚
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for wdj_data in wdj_datas %}
+                                <tr>
+                                    <td>{{wdj_data[0]}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{wdj_data[1]}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{wdj_data[2]}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{wdj_data[3]}}</td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-md-12 column" style="margin-top: 20px;margin-bottom: 10px;">
+                            <h4>百度数据变化趋势</h4>
+                            <div id="baidu" style="height:500px;border:1px solid #ccc;padding:10px;"></div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-md-12 column" style="margin-top: 20px;margin-bottom: 10px;">
+                            <h4>taptap数据变化趋势</h4>
+                            <div id="taptap" style="height:500px;border:1px solid #ccc;padding:10px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+            var game_name = document.getElementById('gamename').innerText;
+            var myChart = echarts.init(document.getElementById('baidu'));
+            // 设置---------------------
+            var option = {
+                title: {
+                    text: '百度数据变化趋势'
+                },
+                tooltip : {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data:['贴吧会员数','贴吧帖子数','百度收录数量'],
+                    selectedMode: 'multiple'
+                },
+                toolbox: {
+                    show : true,
+                    feature : {
+                        mark : {show: true},
+                        dataView : {show: true, readOnly: false},
+                        magicType : {show: true, type: ['line', 'bar']},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                calculable : true,
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : []
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value',
+                        splitArea : {show : true}
+                    }
+                ],
+                series : [
+                    {
+                        name:'贴吧会员数',
+                        type:'bar',
+                        data:[]
+                    },
+                    {
+                        name:'贴吧帖子数',
+                        type:'bar',
+                        data:[]
+                    },
+
+                ]
+            };
+
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: "baidudata", //把表单数据发送到
+                data: {'gamename':game_name}, // 发送的数据
+                dataType : "json",  //返回数据形式为json
+                async: false,
+                error: function(request) {
+                    alert("发送请求失败！");
+                },
+                success: function(result) {
+                    //console.log(result);
+                    for (i = 0, max = result.dates.length; i < max; i++) { //注意：result.dates.length
+                        option.xAxis[0].data.push(result.dates[i]);
+                        option.series[0].data.push(parseFloat(result.gamefork[i]));
+                        option.series[1].data.push(parseFloat(result.gamepost[i]));
+                    };
+
+                    // 为echarts对象加载数据--------------
+                    myChart.setOption(option);
+                }
+            });
+            // 为echarts对象加载数据--------------
+            //myChart.setOption(option);
+
+    //taptap图表
+    var taptapChart = echarts.init(document.getElementById('taptap'));
+    var tap_option = {
+                title: {
+                    text: 'taptap数据变化趋势'
+                },
+                tooltip : {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data:['下载量','评论量','taptap论坛数量'],
+                    selectedMode: 'multiple'
+                },
+                toolbox: {
+                    show : true,
+                    feature : {
+                        mark : {show: true},
+                        dataView : {show: true, readOnly: false},
+                        magicType : {show: true, type: ['line', 'bar']},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                calculable : true,
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : []
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value',
+                        splitArea : {show : true}
+                    }
+                ],
+                series : [
+                    {
+                        name:'下载量',
+                        type:'bar',
+                        data:[]
+                    },
+                    {
+                        name:'评论量',
+                        type:'bar',
+                        data:[]
+                    },
+                    {
+                        name:'taptap论坛数量',
+                        type:'bar',
+                        data:[]
+                    },
+
+                ]
+            };
+
+    $.ajax({
+                cache: false,
+                type: "GET",
+                url: "taptapdata", //把表单数据发送到
+                data: {'gamename':game_name}, // 发送的数据
+                dataType : "json",  //返回数据形式为json
+                async: false,
+                error: function(request) {
+                    alert("发送请求失败！");
+                },
+                success: function(result) {
+                    //console.log(result);
+                    for (i = 0, max = result.dates.length; i < max; i++) { //注意：result.dates.length
+                        tap_option.xAxis[0].data.push(result.dates[i]);
+                        tap_option.series[0].data.push(parseFloat(result.gamedownload[i]));
+                        tap_option.series[1].data.push(parseFloat(result.gamecomment[i]));
+                        tap_option.series[2].data.push(parseFloat(result.gametopic[i]));
+                    };
+                    // 为echarts对象加载数据--------------
+                    taptapChart.setOption(tap_option);
+                }
+            });
+
+    </script>
+</body>
+</html>
