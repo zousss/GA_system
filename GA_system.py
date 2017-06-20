@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from flask import Flask, request, url_for, json,jsonify
+from flask import Flask, request, url_for, json,jsonify,redirect
 from flaskext.mysql import MySQL
 from flask import render_template
 import datetime
@@ -9,11 +9,39 @@ import time
 
 mysql = MySQL()
 app = Flask(__name__)
+app.config['MYSQL_DATABASE_USER'] = 'zoujianwei'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'KPhUIEd2t622uwtB1xtZ'
+app.config['MYSQL_DATABASE_DB'] = 'spiderdata'
+app.config['MYSQL_DATABASE_HOST'] = '192.168.112.47'
 mysql.init_app(app)
 
 @app.route("/")
 def hello():
-    return "Hello"
+    return redirect(url_for('search_game',_external=True))
+
+#封装msyql结果集，转换成json格式
+def mysql_data_josn(header,datas):
+    result = {}
+    if datas:
+        result['code'] = 1
+        result['total'] = 0
+        result['message'] = 'Empty set'
+    else:
+        result['code'] = 0
+        result['total'] = len(datas)
+        result['message'] = 'Success request'
+    headers = []
+    for header_member in header:
+        headers.append(str(header_member[0]))
+    result_array = []
+    for result_line in datas:
+        result_line_dic = {}
+        for array_pos in range(0, len(headers)):
+            data_dic_key = headers[array_pos]
+            result_line_dic[data_dic_key] = str(result_line[array_pos].encode('utf-8')) if isinstance(result_line[array_pos],unicode) else float(result_line[array_pos])
+        result_array.append(result_line_dic)
+    result['datas'] = result_array
+    return jsonify(result_array)
 
 #游分系统入口
 @app.route("/search")
@@ -54,7 +82,8 @@ def hot_games():
         	appinfo.app_rank t2
         on t1.game_name = t2.app_name
         WHERE
-        	SUBSTR(t1.game_testtime, 1, 10)= CURRENT_DATE
+        	SUBSTR(t1.game_testtime, 1, 10) BETWEEN date_add(CURRENT_DATE, INTERVAL - 2 DAY)
+        	AND CURRENT_DATE
         ORDER BY t2.app_rank desc
         LIMIT 10
     """
@@ -82,14 +111,14 @@ def new_games():
     return xin_games
 
 #总况页面获取数据生成echarts图表
-@app.route('/echarts',methods=['GET'])
+@app.route('/type_echarts',methods=['GET'])
 def get_game_echarts():
     cursor = mysql.connect().cursor()
     sql = """
         SELECT
-        	t1.dh_game_type,
-        	t1.test_type,
-        	t1.type_cnt / t2.type_cnt
+        	t1.dh_game_type as dh_game_type,
+        	t1.test_type as test_type,
+        	t1.type_cnt / t2.type_cnt as type_num
         FROM
         	game_type_view t1
         LEFT JOIN(
@@ -104,17 +133,19 @@ def get_game_echarts():
     """
     cursor.execute(sql)
     gametypes = cursor.fetchall()
-    type = []
-    for game in gametypes:
-        type.append({'dh_game_type':game[0],'test_type':game[1],'type_num':float(game[2])})
-    return json.dumps(type)
+
+    return mysql_data_josn(cursor.description,gametypes)
+    #type = []
+    #for game in gametypes:
+    #    type.append({'dh_game_type':game[0],'test_type':game[1],'type_num':float(game[2])})
+    #return json.dumps(type)
 
 #总况页面获取数据生成echarts图表
 @app.route('/channel_echarts',methods=['GET'])
 def get_channel_echarts():
     cursor = mysql.connect().cursor()
     sql = """
-        select a.dh_game_type,a.game_source,a.type_cnt/b.total_cnt
+        select a.dh_game_type as dh_game_type,a.game_source as game_source,a.type_cnt/b.total_cnt as type_rate
             from (
                  select t1.game_source as game_source,t2.dh_game_type as dh_game_type,count(*) as type_cnt
                    from game_info t1
@@ -134,10 +165,11 @@ def get_channel_echarts():
     """
     cursor.execute(sql)
     gametypes = cursor.fetchall()
-    type = []
-    for game in gametypes:
-        type.append({'dh_game_type':game[0],'game_source':game[1],'type_rate':float(game[2])})
-    return json.dumps(type)
+    return mysql_data_josn(cursor.description,gametypes)
+    #type = []
+    #for game in gametypes:
+    #    type.append({'dh_game_type':game[0],'game_source':game[1],'type_rate':float(game[2])})
+    #return json.dumps(type)
 
 #游戏详情入口
 @app.route("/game_info",methods=['GET'])
@@ -231,10 +263,10 @@ def get_baidudata():
     game_name = request.args.get('gamename')
     sql = """
             SELECT
-                SUBSTR(record_time, 1, 10),
-                replace(game_fork,',',''),
-                replace(game_post,',',''),
-                replace(game_record,',','')
+                SUBSTR(record_time, 1, 10) as dates,
+                replace(game_fork,',','') as gamefork,
+                replace(game_post,',','') as gamepost,
+                replace(game_record,',','') as gamerecord
             FROM
                 baidugamedata
             WHERE
@@ -243,24 +275,27 @@ def get_baidudata():
           """'
             GROUP BY
                 1,2,3,4
+            ORDER BY 1 DESC
+            LIMIT 10
     """
     cursor = mysql.connect().cursor()
     cursor.execute(sql)
     gameinfo = cursor.fetchall()
-    return jsonify(dates = [x[0] for x in gameinfo],
-                   gamefork = [x[1] for x in gameinfo],
-                   gamepost = [x[2] for x in gameinfo],
-                   gamerecord = [x[3] for x in gameinfo])
+    return mysql_data_josn(cursor.description,sorted(gameinfo))
+    #return jsonify(dates = [x[0] for x in gameinfo],
+    #               gamefork = [x[1] for x in gameinfo],
+    #               gamepost = [x[2] for x in gameinfo],
+    #               gamerecord = [x[3] for x in gameinfo])
 
 @app.route('/taptapdata',methods=['GET'])
 def get_taptapdata():
     game_name = request.args.get('gamename')
     sql = """
             SELECT
-                SUBSTR(record_time, 1, 10),
-                replace(game_downloadnum,',',''),
-                replace(game_commentnum,',',''),
-                replace(game_topicnum,',','')
+                SUBSTR(record_time, 1, 10) as record_time,
+                replace(game_downloadnum,',','') as game_downloadnum,
+                replace(game_commentnum,',','') as game_commentnum,
+                replace(game_topicnum,',','') as game_topicnum
             FROM
                 taptap_gamedata
             WHERE
@@ -269,14 +304,19 @@ def get_taptapdata():
           """'
             GROUP BY
                 1,2,3,4
+            ORDER BY 1 DESC
+            LIMIT 10
     """
     cursor = mysql.connect().cursor()
     cursor.execute(sql)
     gameinfo = cursor.fetchall()
-    return jsonify(dates = [x[0] for x in gameinfo],
-                   gamedownload = [x[1] for x in gameinfo],
-                   gamecomment = [x[2] for x in gameinfo],
-                   gametopic = [x[3] for x in gameinfo])
+    #print cursor.description
+    #headers = ['record_time','game_downloadnum','game_commentnum','game_topicnum']
+    return mysql_data_josn(cursor.description,sorted(gameinfo))
+    #return jsonify(dates = [x[0] for x in gameinfo],
+    #               gamedownload = [x[1] for x in gameinfo],
+    #               gamecomment = [x[2] for x in gameinfo],
+    #               gametopic = [x[3] for x in gameinfo])
 #获取360手机助手数据
 def zs360_game(game_name):
     sql = """
@@ -355,30 +395,31 @@ def game_compare():
         compare_gamename = request.args.get('compare_game')
     return render_template('game_compare.html',gamename=gamename,compare_gamename=compare_gamename)
 
-@app.route("/compare_data",methods=['GET'])
+@app.route("/compare_taptap_data",methods=['GET'])
 def compare_data():
     if request.method == "GET":
         gamename = request.args.get('game1')
         compare_gamename = request.args.get('game2').strip()
         sql = """
             SELECT
-            	game_name,
-            	game_downloadnum,
-            	SUBSTR(record_time, 1, 10)
+            	game_name as game2,
+            	game_downloadnum as game1,
+            	SUBSTR(record_time, 1, 10) as dates
             FROM
             	taptap_gamedata
             WHERE
             	game_name in ('"""+gamename+"""', '"""+compare_gamename+"""')
-            ORDER BY 3
+            ORDER BY 3 DESC
         """
         cursor = mysql.connect().cursor()
         cursor.execute(sql)
         comp_data = cursor.fetchall()
+        #return mysql_data_josn(cursor.description,comp_data)
         game1 = {}
         game2 = {}
         now = datetime.datetime.now()
         dates = []
-        for i in range(-7,-1):
+        for i in range(-7,0):
             delta  = datetime.timedelta(days=i)
             new_date = now+delta
             dates.append(new_date.strftime('%Y-%m-%d'))
@@ -386,11 +427,15 @@ def compare_data():
             for date in dates:
                 if com[0] == gamename and com[2] == date:
                     game1[date] = [com[1]]
+                else:
+                    game1[date] = [com[1]]
                 if com[0] == compare_gamename and com[2] == date:
+                    game2[date] = [com[1]]
+                else:
                     game2[date] = [com[1]]
         return jsonify(dates,game1,game2)
 
-@app.route("/market_data",methods=['GET'])
+@app.route("/compare_market_data",methods=['GET'])
 def market_data():
     if request.method == "GET":
         gamename = request.args.get('game1')
@@ -432,4 +477,4 @@ def market_data():
         return jsonify(dates,game1,game2)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True, threaded=True)
+    app.run(host='0.0.0.0', port=80 ,debug=True, threaded=True)

@@ -206,12 +206,24 @@
                 xAxis : [
                     {
                         type : 'category',
-                        data : []
+                        data : [],
+                        axisLabel: {
+                            interval: 0,//横轴信息全部显示
+                            rotate: 60 //60度角倾斜显示
+                        },
                     }
                 ],
                 yAxis : [
                     {
                         type : 'value',
+                        name : '贴吧会员数',
+                        scale: true,
+                        splitArea : {show : true}
+                    },
+                    {
+                        type : 'value',
+                        name : '贴吧帖子数',
+                        scale: true,
                         splitArea : {show : true}
                     }
                 ],
@@ -219,11 +231,13 @@
                     {
                         name:'贴吧会员数',
                         type:'bar',
+                        yAxisIndex: 0,
                         data:[]
                     },
                     {
                         name:'贴吧帖子数',
                         type:'bar',
+                        yAxisIndex: 1,
                         data:[]
                     },
 
@@ -242,10 +256,10 @@
                 },
                 success: function(result) {
                     //console.log(result);
-                    for (i = 0, max = result.dates.length; i < max; i++) { //注意：result.dates.length
-                        option.xAxis[0].data.push(result.dates[i]);
-                        option.series[0].data.push(parseFloat(result.gamefork[i]));
-                        option.series[1].data.push(parseFloat(result.gamepost[i]));
+                    for (i = 0, max = result.length; i < max; i++) { //注意：result.dates.length
+                        option.xAxis[0].data.push(result[i].dates);
+                        option.series[0].data.push(parseFloat(result[i].gamefork));
+                        option.series[1].data.push(parseFloat(result[i].gamepost));
                     };
 
                     // 为echarts对象加载数据--------------
@@ -282,12 +296,23 @@
                 xAxis : [
                     {
                         type : 'category',
-                        data : []
+                        data : [],
+                        axisLabel: {
+                            interval: 0,//横轴信息全部显示
+                            rotate: 60 //60度角倾斜显示
+                        },
                     }
                 ],
                 yAxis : [
                     {
                         type : 'value',
+                        name : '下载量',
+                        scale: true,
+                        splitArea : {show : true}
+                    },
+                    {
+                        type : 'value',
+                        scale: true,
                         splitArea : {show : true}
                     }
                 ],
@@ -295,16 +320,19 @@
                     {
                         name:'下载量',
                         type:'bar',
+                        yAxisIndex:0,
                         data:[]
                     },
                     {
                         name:'评论量',
                         type:'bar',
+                        yAxisIndex:1,
                         data:[]
                     },
                     {
                         name:'taptap论坛数量',
                         type:'bar',
+                        yAxisIndex:1,
                         data:[]
                     },
 
@@ -322,12 +350,13 @@
                     alert("发送请求失败！");
                 },
                 success: function(result) {
-                    //console.log(result);
-                    for (i = 0, max = result.dates.length; i < max; i++) { //注意：result.dates.length
-                        tap_option.xAxis[0].data.push(result.dates[i]);
-                        tap_option.series[0].data.push(parseFloat(result.gamedownload[i]));
-                        tap_option.series[1].data.push(parseFloat(result.gamecomment[i]));
-                        tap_option.series[2].data.push(parseFloat(result.gametopic[i]));
+                    //console.log(result.length);
+                    for (i = 0, max = result.length; i < max; i++) { //注意：result.dates.length
+                        //console.log(result[i].record_time);
+                        tap_option.xAxis[0].data.push(result[i].record_time);
+                        tap_option.series[0].data.push(parseFloat(result[i].game_downloadnum));
+                        tap_option.series[1].data.push(parseFloat(result[i].game_commentnum));
+                        tap_option.series[2].data.push(parseFloat(result[i].game_topicnum));
                     };
                     // 为echarts对象加载数据--------------
                     taptapChart.setOption(tap_option);

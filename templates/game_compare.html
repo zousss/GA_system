@@ -100,7 +100,7 @@
     $.ajax({
                 cache: false,
                 type: "GET",
-                url: "compare_data", //把表单数据发送到
+                url: "compare_taptap_data", //把表单数据发送到
                 data: {'game1':gamename,'game2':compare_gamename}, // 发送的数据
                 dataType : "json",  //返回数据形式为json
                 async: false,
@@ -117,7 +117,7 @@
                     var avg_game2 = 0;
                     var num_game2 = 0
 
-                    for (i = 0, max = result[0].length; i < max; i++) {
+                    for (i = 0, max = result.length; i < max; i++) {
                         if (result[1][result[0][i]]) {
                             sum_game1 += parseFloat(result[1][result[0][i]]);
                             num_game1 += 1
@@ -209,7 +209,7 @@
     $.ajax({
                 cache: false,
                 type: "GET",
-                url: "market_data", //把表单数据发送到
+                url: "compare_market_data", //把表单数据发送到
                 data: {'game1':gamename,'game2':compare_gamename}, // 发送的数据
                 dataType : "json",  //返回数据形式为json
                 async: false,
