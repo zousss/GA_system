@@ -5,13 +5,9 @@
     <bookmark url="file://$PROJECT_DIR$/templates/gameinfo.html" line="22" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6c387b22-95a9-461d-badd-fe6bdf875a61" name="Default" comment="Merge branch 'master' of http://192.168.112.47:2000/wade/game_system&#10;">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+    <list default="true" id="6c387b22-95a9-461d-badd-fe6bdf875a61" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GA_system.py" afterPath="$PROJECT_DIR$/GA_system.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/game_compare.html" afterPath="$PROJECT_DIR$/templates/game_compare.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/gameinfo.html" afterPath="$PROJECT_DIR$/templates/gameinfo.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/search_page.html" afterPath="$PROJECT_DIR$/templates/search_page.html" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -30,8 +26,8 @@
       <file leaf-file-name="GA_system.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GA_system.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="399">
-              <caret line="21" column="21" lean-forward="true" selection-start-line="21" selection-start-column="21" selection-end-line="21" selection-end-column="21" />
+            <state relative-caret-position="427">
+              <caret line="478" column="26" lean-forward="true" selection-start-line="478" selection-start-column="26" selection-end-line="478" selection-end-column="26" />
               <folding>
                 <element signature="e#47#111#0" expanded="true" />
               </folding>
@@ -611,6 +607,14 @@
       <option name="presentableId" value="Default" />
       <updated>1495415773993</updated>
     </task>
+    <task id="LOCAL-00001" summary="Merge branch 'master' of http://192.168.112.47:2000/wade/game_system&#10;">
+      <created>1497926517116</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1497926517116</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1023,8 +1027,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/GA_system.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="399">
-          <caret line="21" column="21" lean-forward="true" selection-start-line="21" selection-start-column="21" selection-end-line="21" selection-end-column="21" />
+        <state relative-caret-position="427">
+          <caret line="478" column="26" lean-forward="true" selection-start-line="478" selection-start-column="26" selection-end-line="478" selection-end-column="26" />
           <folding>
             <element signature="e#47#111#0" expanded="true" />
           </folding>
