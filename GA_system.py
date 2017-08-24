@@ -220,7 +220,7 @@ def get_same_type(game_name):
         FROM
         	game_info
         WHERE
-        	game_type =(
+        	game_type = (
         		SELECT
         			game_type
         		FROM
