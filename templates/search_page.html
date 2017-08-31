@@ -129,25 +129,67 @@
      return res;
     }
 
-    var xAxis_data=[];
-    var legend_data=[];
-    var kaifu_data=[];
-    var fengce_data=[];
-    var gongce_data=[];
+    var xAxis_data_dic={};
+    var legend_data_dic={};
+    var kaifu_data_dic={};
+    var fengce_data_dic={};
+    var gongce_data_dic={};
+    var neice_data_dic={};
     var myobj = JSON.stringify(typebar);
     for(var i=0;i < typebar.length;i++){
-        xAxis_data.push(typebar[i].dh_game_type);
-        legend_data.push(typebar[i].test_type);
-        if (typebar[i].test_type == '开服'){
-            kaifu_data.push(typebar[i].type_num);
+
+        xAxis_data_dic[typebar[i].dh_game_type] = 1;
+        legend_data_dic[typebar[i].test_type] = 1;
+
+        if (typebar[i].test_type == "开服"){
+            kaifu_data_dic[typebar[i].dh_game_type] = typebar[i].type_num;
         }
-        if (typebar[i].test_type == '封测'){
-            fengce_data.push(typebar[i].type_num);
+        if (typebar[i].test_type == "封测"){
+            fengce_data_dic[typebar[i].dh_game_type] = typebar[i].type_num;
         }
-        if (typebar[i].test_type == '公测'){
-            gongce_data.push(typebar[i].type_num);
+        if (typebar[i].test_type == "公测"){
+            gongce_data_dic[typebar[i].dh_game_type] = typebar[i].type_num;
+        }
+        if (typebar[i].test_type == "内测"){
+            neice_data_dic[typebar[i].dh_game_type] = typebar[i].type_num;
+        }
+
+    }
+
+    var xAxis_data = Object.keys(xAxis_data_dic);
+    var legend_data = Object.keys(legend_data_dic);
+    var kaifu_data =[];
+    var fengce_data =[];
+    var gongce_data =[];
+    var neice_data =[];
+    for(var i=0;i<xAxis_data.length;i++){
+        if((xAxis_data[i]) in kaifu_data_dic){
+            kaifu_data.push(kaifu_data_dic[xAxis_data[i]]);
+        }else{
+            kaifu_data.push(0);
+        }
+        if((xAxis_data[i]) in fengce_data_dic){
+            fengce_data.push(fengce_data_dic[xAxis_data[i]]);
+        }else{
+            fengce_data.push(0);
+        }
+        if((xAxis_data[i]) in gongce_data_dic){
+            gongce_data.push(gongce_data_dic[xAxis_data[i]]);
+        }else{
+            gongce_data.push(0);
+        }
+        if((xAxis_data[i]) in neice_data_dic){
+            neice_data.push(neice_data_dic[xAxis_data[i]]);
+        }else{
+            neice_data.push(0);
         }
     }
+
+    //console.log(xAxis_data);
+    //console.log(typebar);
+    //console.log(kaifu_data);
+    //console.log(gongce_data);
+    //console.log(fengce_data);
 
     var option2 = {
         tooltip : {},
@@ -201,6 +243,12 @@
                 type:'bar',
                 stack: 'type',
                 data:gongce_data
+            },
+            {
+                name:'内测',
+                type:'bar',
+                stack: 'type',
+                data:neice_data
             }
         ]
     };
@@ -238,8 +286,8 @@
 
     var channel_myobj = JSON.stringify(channel_bar);
     for(var i=0;i < channel_bar.length;i++){
-        xAxis_data.push(channel_bar[i].dh_game_type);
-        legend_data.push(channel_bar[i].game_source);
+        channel_xAxis_data.push(channel_bar[i].dh_game_type);
+        channel_legend_data.push(channel_bar[i].game_source);
         if (channel_bar[i].game_source == '360手机助手'){
             channel_zs360_data.push(channel_bar[i].type_rate);
         }
@@ -259,11 +307,11 @@
             channel_wdj_data.push(channel_bar[i].type_rate);
         }
     }
-
+    //console.log(channel_xAxis_data.unique3());
     var channel_option = {
         tooltip : {},
         legend: {
-            data:legend_data.unique3()
+            data:channel_legend_data.unique3()
         },
         toolbox: {
             show : true,
@@ -282,7 +330,7 @@
         xAxis : [
             {
                 type : 'category',
-                data : xAxis_data.unique3(),
+                data : channel_xAxis_data.unique3(),
                 axisLabel: {
                     interval: 0,//横轴信息全部显示
                     rotate: 60 //60度角倾斜显示

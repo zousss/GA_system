@@ -148,19 +148,20 @@ def get_channel_echarts():
         select a.dh_game_type as dh_game_type,a.game_source as game_source,a.type_cnt/b.total_cnt as type_rate
             from (
                  select t1.game_source as game_source,t2.dh_game_type as dh_game_type,count(*) as type_cnt
-                   from game_info t1
+                   from game_info_view t1
                    join game_type t2
                      on t1.game_type = t2.game_type and t1.game_source = t2.url
                   group by t1.game_source,t2.dh_game_type
              ) a
              JOIN (
                  select t1.game_source as game_source,count(*) as total_cnt
-                   from game_info t1
+                   from game_info_view t1
                    join game_type t2
                      on t1.game_type = t2.game_type and t1.game_source = t2.url
                   group by t1.game_source
              ) b
              on a.game_source = b.game_source
+             where a.type_cnt/b.total_cnt >= 0.01
             ;
     """
     cursor.execute(sql)
@@ -200,7 +201,7 @@ def get_game_info(game_name):
         	game_source,
         	game_link
         FROM
-        	game_info
+        	game_info_view
         WHERE
         	game_name = '""" \
           +game_name+ \
@@ -218,13 +219,13 @@ def get_same_type(game_name):
         	game_link,
         	game_name
         FROM
-        	game_info
+        	game_info_view
         WHERE
         	game_type = (
         		SELECT
         			game_type
         		FROM
-        			game_info
+        			game_info_view
         		WHERE
         			game_name = '""" \
                         +game_name+ \
